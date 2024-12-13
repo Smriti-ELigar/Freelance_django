@@ -1,8 +1,9 @@
 asgiref==3.8.1
 Django==5.1.4
+django-allauth==65.3.0
+django-environ==0.11.2
+pillow==11.0.0
+python-dotenv==1.0.1
+shortuuid==1.0.13
 sqlparse==0.5.3
 tzdata==2024.2
-django-allauth
-django-environ
-shortuuid
-pillow
