@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'users',
     'marketplace',
     'django.contrib.sites',  # Required for allauth
+    'services',
 ]
 
 MIDDLEWARE = [
