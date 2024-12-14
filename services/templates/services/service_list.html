@@ -1,0 +1,27 @@
+<!-- templates/services/service_list.html -->
+{% extends 'services/base.html' %}
+
+{% block title %}Service Listings{% endblock %}
+
+{% block content %}
+<h1>Service Listings</h1>
+<a href="{% url 'service_create' %}" class="btn btn-primary">Create New Service</a>
+
+<ul>
+    {% for service in services %}
+    <li>
+        <h2>{{ service.title }}</h2>
+        <p>{{ service.description }}</p>
+        <p>Price: ${{ service.price }}</p>
+        <p>Category: {{ service.get_category_display }}</p>
+        <p>Owner: {{ service.owner }}</p>
+        {% if user == service.owner %}
+        <a href="{% url 'service_update' service.pk %}" class="btn btn-secondary">Edit</a>
+        <a href="{% url 'service_delete' service.pk %}" class="btn btn-danger">Delete</a>
+        {% endif %}
+    </li>
+    {% empty %}
+    <p>No services available.</p>
+    {% endfor %}
+</ul>
+{% endblock %}

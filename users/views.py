@@ -26,6 +26,7 @@ def signup(request):
                 f'Use this link to verify your email: http://127.0.0.1:8000/verify/{token}',
                 settings.EMAIL_HOST_USER,
                 [user.email],
+                fail_silently=False,
             )
             return redirect('login')
     else:
