@@ -7,6 +7,8 @@ import uuid
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
 from .models import CustomUser
+from django.contrib.auth.decorators import login_required
+from .decorators import freelancer_required, client_required
 
 def home(request):
     return render(request, 'users/home.html')
@@ -16,7 +18,8 @@ def signup(request):
         form = CustomUserCreationForm(request.POST)
         if form.is_valid():
             user = form.save(commit=False)
-            user.is_active = False  # Require email verification
+            user.role = request.POST.get('role')
+            user.is_active = True  # Require email verification
             user.save()
 
             # Send email verification
@@ -34,6 +37,7 @@ def signup(request):
     return render(request, 'users/signup.html', {'form': form})
 
 
+
 def verify_email(request, token):
     try:
         user = CustomUser.objects.get(email_verification_token=token)
@@ -43,6 +47,50 @@ def verify_email(request, token):
         return HttpResponse("Email verified successfully!")
     except CustomUser.DoesNotExist:
         return HttpResponse("Invalid token!")
+    
+
+@login_required
+def dashboard_redirect(request):
+    print(f"User Role: {request.user.role}")
+    if request.user.role == 'Freelancer':
+        return redirect('freelancer_dashboard')
+    elif request.user.role == 'Client':
+        return redirect('client_dashboard')
+    else:
+        return HttpResponse("Invalid role. Please contact support.")
+
+
+
+@login_required
+@freelancer_required
+def freelancer_dashboard(request):
+    return render(request, 'users/freelancer_dashboard.html')
+
+@login_required
+@client_required
+def client_dashboard(request):
+    return render(request, 'users/client_dashboard.html')
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 # render and redirect are used to render HTML templates and redirect users to different views.
 # login is used to log in a user.
@@ -68,9 +116,6 @@ def verify_email(request, token):
 # If the request method is not POST, it initializes an empty form: form = CustomUserCreationForm().
 # Render template:
 # Finally, it renders the signup template with the form: return render(request, 'users/signup.html', {'form': form}).
-
-
-
 
 # Defines a function verify_email that takes request and token as parameters. request is the HTTP request object, and token is the verification token passed in the URL.Try Block:
 

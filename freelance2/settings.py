@@ -137,4 +137,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
+LOGIN_URL = '/users/login/'
+# LOGIN_REDIRECT_URL = '/users/dashboard/'
 
+LOGIN_REDIRECT_URL = 'dashboard_redirect'
