@@ -12,6 +12,29 @@ class CustomUser(AbstractUser):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 # this code extends the standard Django user model to include a new field role with specific choices,
 # making it easy to differentiate between Freelancer and Client roles within your application.
 
