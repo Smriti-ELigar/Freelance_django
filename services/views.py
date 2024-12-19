@@ -1,7 +1,8 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
+from django.db.models import Q
 from .models import Service
-from .forms import ServiceForm
+from .forms import ServiceForm, ServiceSearchForm
 
 # Create a service
 @login_required
@@ -17,10 +18,33 @@ def service_create(request):
         form = ServiceForm()
     return render(request, 'services/service_form.html', {'form': form})
 
-# Read (list) services
+
+
 def service_list(request):
     services = Service.objects.all()
-    return render(request, 'services/service_list.html', {'services': services})
+    form = ServiceSearchForm(request.GET)  # Bind the form to GET parameters
+
+    if form.is_valid():
+        title = form.cleaned_data.get('title')
+        category = form.cleaned_data.get('category')
+        min_price = form.cleaned_data.get('min_price')
+        max_price = form.cleaned_data.get('max_price')
+
+        # Filter based on the form inputs
+        if title:
+            services = services.filter(title__icontains=title)
+        if category:
+            services = services.filter(category=category)
+        if min_price is not None:
+            services = services.filter(price__gte=min_price)
+        if max_price is not None:
+            services = services.filter(price__lte=max_price)
+
+    return render(request, 'services/service_list.html', {
+        'services': services,
+        'form': form,
+    })
+
 
 # Update a service
 @login_required
