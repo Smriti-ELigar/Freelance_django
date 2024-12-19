@@ -1,5 +1,6 @@
 {% extends 'services/base.html' %}
 {% load static %}
+
 {% block content %}
 <h1>Browse Services</h1>
 
@@ -42,6 +43,12 @@
                 <p><strong>Price:</strong> ${{ service.price }}</p>
                 <p><strong>Description:</strong> {{ service.description }}</p>
                 <p><em>Posted on {{ service.created_at|date:"M d, Y" }}</em></p>
+                
+                {% if not service.is_paid %}
+                    <a href="{% url 'process_payment' service.pk %}" class="btn btn-primary">Pay Now</a>
+                {% else %}
+                    <span class="text-success">Paid</span>
+                {% endif %}
             </li>
         {% endfor %}
     </ul>

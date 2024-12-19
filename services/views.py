@@ -1,8 +1,13 @@
+import stripe
+from django.conf import settings
+from django.http import JsonResponse
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q
 from .models import Service
 from .forms import ServiceForm, ServiceSearchForm
+
+stripe.api_key = settings.STRIPE_SECRET_KEY
 
 # Create a service
 @login_required
@@ -67,6 +72,96 @@ def service_delete(request, pk):
         service.delete()
         return redirect('service_list')
     return render(request, 'services/service_confirm_delete.html', {'service': service})
+
+# @login_required
+# def process_payment(request, pk):
+#     service = get_object_or_404(Service, pk=pk)
+   
+
+
+#     if request.method == 'POST':
+#         # Create a payment intent
+#         intent = stripe.PaymentIntent.create(
+#             amount=int(service.price * 100),  # Convert to cents for Stripe
+#             currency='usd',
+#             payment_method=request.POST.get('payment_method_id'),
+#             confirmation_method='manual',
+#             confirm=True,
+#         )
+
+#         if intent['status'] == 'succeeded':
+#             service.is_paid = True
+#             service.save()
+#             return redirect('payment_success')
+#         # print("Stripe Publishable Key:", settings.STRIPE_PUBLIC_KEY)
+
+
+#         return render(request, 'services/payment_failure.html')
+
+
+#     return render(request, 'services/payment_form.html', {
+#         'service': service,
+#         'stripe_public_key': settings.STRIPE_PUBLIC_KEY,
+#     })
+@login_required
+def process_payment(request, pk):
+    service = get_object_or_404(Service, pk=pk)
+
+    if request.method == 'POST':
+        try:
+            # Create a payment intent with updated parameters
+            intent = stripe.PaymentIntent.create(
+                amount=int(service.price * 100),  # Convert to cents for Stripe
+                currency='usd',
+                payment_method=request.POST.get('payment_method_id'),
+                # confirmation_method='manual',
+                confirm=True,
+                return_url=request.build_absolute_uri('/payment_success/')
+                # automatic_payment_methods={
+                #     "enabled": True,
+                #     "allow_redirects": "never",  # Disable redirect-based payment methods
+                # },
+            )
+
+            if intent['status'] == 'succeeded':
+                service.is_paid = True
+                service.save()
+                return redirect('payment_success')
+
+            return render(request, 'services/payment_failure.html', {
+                'error': f"Payment failed with status: {intent['status']}"
+            })
+
+        except stripe.error.CardError as e:
+            return render(request, 'services/payment_failure.html', {
+                'error': f"Card Error: {str(e)}"
+            })
+
+        except stripe.error.InvalidRequestError as e:
+            return render(request, 'services/payment_failure.html', {
+                'error': f"Invalid request: {str(e)}"
+            })
+
+        except Exception as e:
+            return render(request, 'services/payment_failure.html', {
+                'error': f"An unexpected error occurred: {str(e)}"
+            })
+
+    return render(request, 'services/payment_form.html', {
+        'service': service,
+        'stripe_public_key': settings.STRIPE_PUBLIC_KEY,
+    })
+
+
+
+
+def payment_success(request):
+    return render(request, 'services/payment_success.html')
+
+
+def payment_failure(request):
+    return render(request, 'services/payment_failure.html')
+
 
 
 ''' 
