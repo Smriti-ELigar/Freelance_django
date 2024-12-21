@@ -1,3 +1,78 @@
 <!-- users/templates/users/home.html -->
-<h1>Welcome to the Users Home Page</h1>
-<p>This is the home page for the users section.</p>
+{% extends "services/base.html" %}
+{% load static %}
+{% block title %}Freelance Marketplace{% endblock %}
+
+{% block content %}
+
+<section class="hero" style="padding: 50px 0; background-color: #2B2C3A; color: #f4f4f9; text-align: center;">
+    <div class="container">
+        <h1 style="color: #D4B6FF;">Freelance Marketplace.</h1>
+    </div>
+</section>
+
+<section class="introduction" style="padding: 50px 0; background-color: #35354B; color: #f4f4f9;">
+    <div class="container">
+        <h2 class="text-center" style="color: #82A6FF;">Welcome to Freelance Marketplace</h2>
+        <p class="text-center" style="color: #A0C1FF;">Your go-to platform for finding skilled freelancers and reliable clients. Whether you need web development, design, writing, or marketing services, we have got you covered.</p>
+    </div>
+</section>
+
+<section class="featured-services" style="padding: 50px 0; background-color: #2B2C3A; color: #f4f4f9;">
+    <div class="container">
+        <h2 class="text-center" style="color: #82A6FF;">Featured Services</h2>
+        <div class="row">
+            <div class="col-md-4">
+                <div class="card" style="background-color: #3B3C4D; color: #f4f4f9; border: none;">
+                    <div class="card-body">
+                        <h5 class="card-title" style="color: #FFB5E8;">Web Development</h5>
+                        <p class="card-text">Get top-notch web development services from our experienced freelancers.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card" style="background-color: #3B3C4D; color: #f4f4f9; border: none;">
+                    <div class="card-body">
+                        <h5 class="card-title" style="color: #FFB5E8;">Design</h5>
+                        <p class="card-text">Creative design solutions for all your needs, from logos to branding.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card" style="background-color: #3B3C4D; color: #f4f4f9; border: none;">
+                    <div class="card-body">
+                        <h5 class="card-title" style="color: #FFB5E8;">Writing</h5>
+                        <p class="card-text">High-quality writing services for blogs, articles, and more.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="how-it-works" style="padding: 50px 0; background-color: #35354B; color: #f4f4f9;">
+    <div class="container">
+        <h2 class="text-center" style="color: #82A6FF;">How It Works</h2>
+        <div class="row">
+            <div class="col-md-6">
+                <h4 class="text-center" style="color: #A0C1FF;">For Freelancers</h4>
+                <p class="text-center">Create your profile, list your services, and start getting hired by clients.</p>
+            </div>
+            <div class="col-md-6">
+                <h4 class="text-center" style="color: #A0C1FF;">For Clients</h4>
+                <p class="text-center">Browse services, hire freelancers, and get your projects done efficiently.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="call-to-action" style="padding: 50px 0; background-color: #35354B; color: #f4f4f9; text-align: center;">
+    <div class="container">
+        <h2 class="text-center" style="color: #82A6FF;">Get Started Today</h2>
+        <p class="text-center" style="color: #A0C1FF;">Join our community of talented freelancers and trusted clients.</p>
+        <a href="{% url 'users:signup' %}" class="btn btn-primary" style="background-color: #FF9FE8; border-color: #FF9FE8;">Sign Up</a>
+        <a href="{% url 'services:service_list' %}" class="btn btn-secondary" style="background-color: #A0E7FF; border-color: #A0E7FF; color: #1C1B29;">Explore Services</a>
+    </div>
+</section>
+
+{% endblock %}

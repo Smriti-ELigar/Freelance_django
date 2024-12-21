@@ -1,9 +1,44 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Freelancer Dashboard</title>
-</head>
-<body>
-    <h1>Welcome, Freelancer!</h1>
-</body>
-</html>
+{% extends 'services/base.html' %}
+
+{% block title %}Freelancer Dashboard{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2 class="text-center" style="color: #B5A1FF;">Freelancer Dashboard</h2>
+    <h1 class="text-center" style="color: #f4f4f9;">Welcome, {{ user_name }}</h1>
+    <h4 class="text-center" style="color: #f4f4f9;">Total Earnings: ${{ total_earnings }}</h4>
+
+    <h3 style="color: #f4f4f9;">Your Listings</h3>
+    {% if services %}
+        <table class="table table-striped" style="background-color: #2A2943;">
+            <thead>
+                <tr style="color: #D4B6FF;">
+                    <th>Title</th>
+                    <th>Category</th>
+                    <th>Price</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for service in services %}
+                    <tr style="color: #f4f4f9;">
+                        <td>{{ service.title|default:"N/A" }}</td>
+                        <td>{{ service.get_category_display|default:"Uncategorized" }}</td>
+                        <td>${{ service.price|default:"0.00" }}</td>
+                        <td>
+                            <a href="{% url 'services:service_update' service.pk %}" class="btn btn-sm btn-warning" style="background-color: #F89AC5; border-color: #F89AC5;">Edit</a>
+                            <form action="{% url 'services:service_delete' service.pk %}" method="post" style="display:inline;">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-sm btn-danger" style="background-color: #FA4F96; border-color: #FA4F96;">Delete</button>
+                            </form>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <p style="color: #f4f4f9;">Want to create more services? <a href="{% url 'services:service_create' %}" style="color: #F89AC5;">Create a service</a>.</p>
+    {% else %}
+        <p style="color: #f4f4f9;">No services available yet. <a href="{% url 'services:service_create' %}" style="color: #F89AC5;">Create a service</a>.</p>
+    {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,63 @@
+{% load crispy_forms_tags %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}{% endblock %}</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        body {
+            background-color: #1C1B29;
+            color: #f4f4f9;
+            font-family: 'Arial', sans-serif;
+        }
+        h1 {
+            color: #B5A1FF;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .form-control {
+            background-color: #98D6EA;
+            color: #1C1B29;
+            border: none;
+        }
+        .form-control::placeholder {
+            color: #D4B6FF;
+        }
+        .btn-primary {
+            background-color: #F89AC5;
+            border-color: #F89AC5;
+        }
+        .btn-primary:hover {
+            background-color: #FA4F96;
+            border-color: #FA4F96;
+        }
+        .form-container {
+            background-color: #2A2943;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        .container {
+            max-width: 400px;
+            margin: 50px auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="form-container">
+            <h1>{% block form_title %}{% endblock %}</h1>
+            <form method="post" action="{% block form_action %}{% endblock %}">
+                {% csrf_token %}
+                <div class="form-group">
+                    {% block form_fields %}{% endblock %}
+                </div>
+                <button type="submit" class="btn btn-primary btn-block">{% block submit_text %}{% endblock %}</button>
+            </form>
+        </div>
+    </div>
+</body>
+</html>

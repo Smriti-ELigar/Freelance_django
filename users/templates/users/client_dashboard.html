@@ -1,9 +1,41 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Client Dashboard</title>
-</head>
-<body>
-    <h1>Welcome, Client!</h1>
-</body>
-</html>
+{% extends 'services/base.html' %}
+
+{% block title %}Client Dashboard{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2 class="text-center" style="color: #B5A1FF;">Client Dashboard</h2>
+    <h1 class="text-center" style="color: #f4f4f9;">Welcome, {{ user_name }}</h1>
+    <h4 class="text-center" style="color: #f4f4f9;">Total Spent: ${{ total_spent }}</h4>
+
+    <h3 style="color: #f4f4f9;">Your Bookings</h3>
+    {% if bookings %}
+        <table class="table table-striped" style="background-color: #2A2943;">
+            <thead>
+                <tr style="color: #D4B6FF;">
+                    <th>Service</th>
+                    <th>Category</th>
+                    <th>Price</th>
+                    <th>Status</th>
+                    <th>Payment</th>
+                   
+                </tr>
+            </thead>
+            <tbody>
+                {% for booking in bookings %}
+                    <tr style="color: #f4f4f9;">
+                        <td>{{ booking.service.title|default:"N/A" }}</td>
+                        <td>{{ booking.service.get_category_display|default:"Uncategorized" }}</td>
+                        <td>${{ booking.service.price|default:"0.00" }}</td>
+                        <td>{{ booking.status|default:"Unknown" }}</td>
+                        <td>{{ booking.payment_status }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <p style="color: #f4f4f9;">Want to buy more services? <a href="{% url 'services:service_list' %}" style="color: #F89AC5;">Browse services</a>.</p>
+    {% else %}
+        <p style="color: #f4f4f9;">No bookings available yet. <a href="{% url 'services:service_list' %}" style="color: #F89AC5;">Browse services</a>.</p>
+    {% endif %}
+</div>
+{% endblock %}

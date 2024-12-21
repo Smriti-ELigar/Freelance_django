@@ -1,8 +1,17 @@
-<h1>Login</h1>
-<form method="POST">
-    {% csrf_token %}
-    <input type="text" name="username" placeholder="Username">
-    <input type="password" name="password" placeholder="Password">
+{% extends 'users/base_template.html' %}
+{% load crispy_forms_tags %}
+
+
+{% block title %}Login{% endblock %}
+
+{% block form_title %}Login{% endblock %}
+
+{% block form_action %}{% url 'users:login' %}{% endblock %}
+
+{% block form_fields %}
+    {{ form.username|as_crispy_field }}
+    {{ form.password|as_crispy_field }}
     <input type="hidden" name="next" value="{{ next }}">
-    <button type="submit">Login</button>
-</form>
+{% endblock %}
+
+{% block submit_text %}Login{% endblock %}

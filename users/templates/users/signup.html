@@ -1,14 +1,15 @@
-<h1>Signup</h1>
-<form method="POST">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">Signup</button>
-</form>
+{% extends 'users/base_template.html' %}
+{% load crispy_forms_tags %}
 
-<!-- <form method="POST">: This starts a form that will send data to the server using the POST method. POST is used for sending data that needs to be processed, such as user input.
 
-    {% csrf_token %}: This is a Django template tag that inserts a CSRF (Cross-Site Request Forgery) token into the form. This is a security measure to protect against CSRF attacks.
-    
-    {{ form.as_p }}: This renders the form fields as paragraphs. form is a Django form object passed to the template context, and as_p renders each form field inside a <p> tag.
-    
-    <button type="submit">Signup</button>: This creates a submit button with the text "Signup". When clicked, it submits the form. -->
+{% block title %}Signup{% endblock %}
+
+{% block form_title %}Signup{% endblock %}
+
+{% block form_action %}{% url 'users:signup' %}{% endblock %}
+
+{% block form_fields %}
+    {{ form|crispy }}
+{% endblock %}
+
+{% block submit_text %}Signup{% endblock %}
