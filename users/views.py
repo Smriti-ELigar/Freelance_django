@@ -24,10 +24,8 @@ def home(request):
     # Determine the user's role and set the dashboard URL
     if request.user.is_authenticated:
         if request.user.role == ROLE_FREELANCER:  # Assuming `is_freelancer` is a boolean field on the user model
-            # dashboard_url = 'users:freelancer_dashboard'
             dashboard_url = reverse('users:freelancer_dashboard')
         elif request.user.role == ROLE_CLIENT:
-            # dashboard_url = 'users:client_dashboard'
             dashboard_url = reverse('users:client_dashboard') 
     else:
         dashboard_url = None  # No dashboard for anonymous users
@@ -52,7 +50,6 @@ def signup(request):
                 [user.email],
                 fail_silently=False,
             )
-            # return redirect('login')
             return redirect(reverse('users:login'))
     else:
         form = CustomUserCreationForm()
@@ -67,21 +64,11 @@ def verify_email(request, token):
         user.email_verification_token = None
         user.save()
         messages.success(request, "Your email has been successfully verified!")
-        # return redirect('login')
         return redirect(reverse('users:login'))
     else:
         messages.error(request, "Invalid or expired token. Please try again.")
-        # return redirect('resend_verification_email')
         return redirect(reverse('users:resend_verification_email'))
 
-    # try:
-    #     user = CustomUser.objects.get(email_verification_token=token)
-    #     user.is_active = True
-    #     user.email_verification_token = ''
-    #     user.save()
-    #     return HttpResponse("Email verified successfully!")
-    # except CustomUser.DoesNotExist:
-    #     return HttpResponse("Invalid token!")
     
 def resend_verification_email(request):
     if request.method == 'POST':
@@ -123,7 +110,8 @@ def freelancer_dashboard(request):
     total_earnings = Booking.objects.filter(service__owner=request.user, status='completed') \
                                      .aggregate(Sum('service__price'))['service__price__sum'] or 0
 
-    services = Service.objects.filter(owner=request.user).prefetch_related('category')
+    # services = Service.objects.filter(owner=request.user).prefetch_related('category')
+    services = Service.objects.filter(owner=request.user) # Removed prefetch_related('category')
 
     return render(request, 'users/freelancer_dashboard.html', {
         'services': services,

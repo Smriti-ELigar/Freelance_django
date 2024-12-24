@@ -22,8 +22,6 @@ def service_create(request):
             service = form.save(commit=False)
             service.owner = request.user  # Assign the logged-in user as the owner
             service.save()
-            # return redirect('service_list')
-            # return redirect('services:service_list')
             return redirect(reverse('services:service_list'))
     else:
         form = ServiceForm()
@@ -89,54 +87,7 @@ def service_delete(request, pk):
         return redirect(reverse('services:service_list'))
     return render(request, 'services/service_confirm_delete.html', {'service': service})
 
-# @login_required
-# def process_payment(request, pk):
-#     service = get_object_or_404(Service, pk=pk)
 
-#     if request.method == 'POST':
-#         try:
-#             # Create a payment intent with updated parameters
-#             intent = stripe.PaymentIntent.create(
-#                 amount=int(service.price * 100),  # Convert to cents for Stripe
-#                 currency='usd',
-#                 payment_method=request.POST.get('payment_method_id'),
-#                 # confirmation_method='manual',
-#                 confirm=True,
-#                 return_url=request.build_absolute_uri('/payment_success/')
-#                 # automatic_payment_methods={
-#                 #     "enabled": True,
-#                 #     "allow_redirects": "never",  # Disable redirect-based payment methods
-#                 # },
-#             )
-
-#             if intent['status'] == 'succeeded':
-#                 service.is_paid = True
-#                 service.save()
-#                 return redirect('payment_success')
-
-#             return render(request, 'services/payment_failure.html', {
-#                 'error': f"Payment failed with status: {intent['status']}"
-#             })
-
-#         except stripe.error.CardError as e:
-#             return render(request, 'services/payment_failure.html', {
-#                 'error': f"Card Error: {str(e)}"
-#             })
-
-#         except stripe.error.InvalidRequestError as e:
-#             return render(request, 'services/payment_failure.html', {
-#                 'error': f"Invalid request: {str(e)}"
-#             })
-
-#         except Exception as e:
-#             return render(request, 'services/payment_failure.html', {
-#                 'error': f"An unexpected error occurred: {str(e)}"
-#             })
-
-#     return render(request, 'services/payment_form.html', {
-#         'service': service,
-#         'stripe_public_key': settings.STRIPE_PUBLIC_KEY,
-#     })
 @login_required
 def create_booking(request, service_id):
     service = get_object_or_404(Service, pk=service_id)
@@ -150,7 +101,6 @@ def process_payment(request, booking_id):
     if booking.payment_status == 'success':
         messages.info(request, "This booking has already been paid for.")
         return redirect(reverse('users:client_dashboard'))
-
     try:
         session = stripe.checkout.Session.create(
             payment_method_types=['card'],
@@ -169,8 +119,6 @@ def process_payment(request, booking_id):
             cancel_url=request.build_absolute_uri(
                 reverse('services:payment_failed') + f'?booking_id={booking.id}'
             ),
-            # success_url=request.build_absolute_uri('/payment-success/') + f'?session_id={{CHECKOUT_SESSION_ID}}&booking_id={booking.id}',
-            # cancel_url=request.build_absolute_uri('/payment-failed/') + f'?booking_id={booking.id}',
         )
         return redirect(session.url)
     except Exception as e:
